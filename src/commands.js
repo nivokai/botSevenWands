@@ -101,6 +101,12 @@ const config = new SlashCommandBuilder()
       .setDescription('Rôle autorisé à créer des cours (vide = tout le monde)')
       .addRoleOption((o) => o.setName('role').setDescription('Rôle (laisser vide pour retirer la restriction)')),
   )
+  .addSubcommand((s) =>
+    s
+      .setName('role-staff')
+      .setDescription('Rôle autorisé à modifier/supprimer tous les cours (vide = admins seulement)')
+      .addRoleOption((o) => o.setName('role').setDescription('Rôle (laisser vide pour retirer)')),
+  )
   .addSubcommand((s) => s.setName('voir').setDescription('Voir la configuration actuelle'));
 
 module.exports = [cours, stats, salle, config].map((c) => c.toJSON());

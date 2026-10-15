@@ -32,19 +32,20 @@ npm start
 2. `/config historique salon:#historique`
 3. `/salle ajouter nom:Serres` (une fois par salle)
 4. Optionnel : `/config role-prof role:@Professeur` pour que seul ce rôle (et les admins) puisse créer des cours.
+5. Optionnel : `/config role-staff role:@Direction` pour que ce rôle puisse modifier et supprimer **tous** les cours. Sans ça, chacun ne gère que ses propres cours (sauf les admins).
 
 ## Commandes
 
 | Commande | Rôle |
 |---|---|
 | `/cours ajouter matiere intitule salle datetime duree annee` | Ajouter un cours (ex : SORTS + `Flamette` → **Sort (Flamette)**) |
-| `/cours modifier id …` | Modifier un cours (le créateur ou un admin) |
-| `/cours supprimer id` | Supprimer un cours (le créateur ou un admin) |
+| `/cours modifier id …` | Modifier un cours (le créateur, le rôle staff ou un admin) |
+| `/cours supprimer id` | Supprimer un cours (le créateur, le rôle staff ou un admin) |
 | `/cours liste [passes] [createur]` | Afficher tous les cours |
 | `/cours actualiser` | Actualiser manuellement tous les embeds |
 | `/stats createur [utilisateur]` | Voir les détails d'un créateur |
 | `/salle ajouter / supprimer / liste` | Gérer les salles (admins pour ajouter/supprimer) |
-| `/config planning / historique / role-prof / voir` | Configuration (permission « Gérer le serveur ») |
+| `/config planning / historique / role-prof / role-staff / voir` | Configuration (permission « Gérer le serveur ») |
 
 **Format de `datetime`** (heure de Paris) : `09/10/2026 14:20`, `9/10 14h20`, `demain 20h`, `14:20` (aujourd'hui).
 Pendant la saisie, Discord affiche un aperçu de la date comprise par le bot.

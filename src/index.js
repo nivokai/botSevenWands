@@ -43,8 +43,13 @@ function canCreate(i) {
   return hasRole(i, db.config.profRoleId);
 }
 
+// Admins et rôle staff : peuvent gérer les cours de tout le monde
+function isStaff(i) {
+  return isAdmin(i) || (!!db.config.staffRoleId && hasRole(i, db.config.staffRoleId));
+}
+
 function canEdit(i, course) {
-  return isAdmin(i) || course.createur === i.user.id;
+  return isStaff(i) || course.createur === i.user.id;
 }
 
 // ---------- Helpers ----------
@@ -298,8 +303,21 @@ async function configRole(i) {
   });
 }
 
+async function configStaff(i) {
+  const role = i.options.getRole('role');
+  db.config.staffRoleId = role?.id ?? null;
+  save();
+  await i.reply({
+    content: role
+      ? `✅ Les membres avec ${role} (et les admins) peuvent modifier et supprimer tous les cours.`
+      : '✅ Seuls les admins peuvent modifier et supprimer les cours des autres.',
+    allowedMentions: { parse: [] },
+    ...EPHEMERAL,
+  });
+}
+
 async function configVoir(i) {
-  const { planningChannelId, historyChannelId, profRoleId } = db.config;
+  const { planningChannelId, historyChannelId, profRoleId, staffRoleId } = db.config;
   const embed = new EmbedBuilder()
     .setColor(COLOR)
     .setTitle('⚙️ Configuration')
@@ -307,6 +325,7 @@ async function configVoir(i) {
       { name: 'Salon emploi du temps', value: planningChannelId ? `<#${planningChannelId}>` : 'Non défini' },
       { name: 'Salon historique', value: historyChannelId ? `<#${historyChannelId}>` : 'Non défini' },
       { name: 'Rôle prof', value: profRoleId ? `<@&${profRoleId}>` : 'Tout le monde' },
+      { name: 'Rôle staff', value: staffRoleId ? `<@&${staffRoleId}>` : 'Admins seulement' },
       { name: 'Prochain numéro de cours', value: String(db.nextId) },
       { name: 'Salles', value: String(db.salles.length), inline: true },
       { name: 'Cours enregistrés', value: String(db.courses.length), inline: true },
@@ -379,7 +398,7 @@ async function autocomplete(i) {
 
   if (focused.name === 'id') {
     const now = Math.floor(Date.now() / 1000);
-    const admin = isAdmin(i);
+    const admin = isStaff(i);
     const choices = db.courses
       .filter((c) => admin || c.createur === i.user.id)
       .filter((c) => !query || String(c.id).includes(query) || norm(courseTitle(c)).includes(query))
@@ -415,6 +434,7 @@ const handlers = {
   'config planning': configPlanning,
   'config historique': configHistorique,
   'config role-prof': configRole,
+  'config role-staff': configStaff,
   'config voir': configVoir,
 };
 

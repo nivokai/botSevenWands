@@ -15,6 +15,7 @@ function defaults() {
       historyChannelId: null,
       historyMessages: {}, // { 'YYYY-MM-DD': [messageId, ...] }
       profRoleId: null,
+      staffRoleId: null, // peut modifier/supprimer les cours des autres
     },
   };
 }
